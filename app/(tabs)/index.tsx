@@ -1,11 +1,33 @@
-import { Image, StyleSheet, Platform } from 'react-native';
+import { Image, StyleSheet, Platform, Button } from 'react-native';
 
 import { HelloWave } from '@/components/HelloWave';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 
+const getHealthStatus = () => {
+  return fetch('https://recipelens.hpcc.vn/recommender/health')
+    .then(response => response.json())
+    .then(json => {
+      // json should be { "status": "healthy" }
+      console.log('API response:', json);
+      return json.status; // or return json if you want the entire object
+    })
+    .catch(error => {
+      console.error('Error fetching health status:', error);
+    });
+};
 export default function HomeScreen() {
+  const getMoviesFromApi = () => {
+    return fetch('https://recipelens.hpcc.vn/recommender/health')
+      .then(response => response.json())
+      .then(json => {
+        return json.movies;
+      })
+      .catch(error => {
+        console.error(error);
+      });
+  };
   return (
     <ParallaxScrollView
       headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
@@ -18,6 +40,15 @@ export default function HomeScreen() {
       <ThemedView style={styles.titleContainer}>
         <ThemedText type="title">Welcome!</ThemedText>
         <HelloWave />
+        <Button
+          title="Handle"
+          onPress={() => {
+            getHealthStatus().then((status) => {
+              // status should be "healthy"
+              console.log('Health status is:', status);
+            });
+          }}
+        />
       </ThemedView>
       <ThemedView style={styles.stepContainer}>
         <ThemedText type="subtitle">Step 1: Try it</ThemedText>
